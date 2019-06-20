@@ -1,0 +1,27 @@
+## VirtualHost for showdoc ##
+
+    server {
+        listen       82;
+        server_name  192.168.5.22;
+
+        location / {
+            root   /data/www/1;
+            index  index.html index.htm index.php;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        location ~ \.php$ {
+            root           /data/www/1;
+            fastcgi_pass   nginx-php.kube-system.svc.cluster.local:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /data/www/1$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+    }
